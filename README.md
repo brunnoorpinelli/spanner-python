@@ -45,6 +45,19 @@ The client library exposes two write styles:
   `WHERE` clause or computed values.
 
 ```python
+# Mutation insert — columns once, then one tuple per row
+with database.batch() as batch:
+    batch.insert(
+        table="Singers",
+        columns=("SingerId", "FirstName", "LastName", "Active"),
+        values=[
+            (1, "Marc", "Richards", True),
+            (2, "Catalina", "Smith", True),
+            (3, "Alice", "Trentor", False),
+        ],
+    )
+
+# DML for conditional changes
 def apply_dml(transaction):
     transaction.execute_update("UPDATE Singers SET LastName = 'Anderson' WHERE Active = true")
 

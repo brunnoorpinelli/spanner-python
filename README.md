@@ -27,6 +27,17 @@ cursor.execute(
 connection.commit()
 ```
 
+**Pros**
+- Zero framework — just SQL strings and a cursor; flat learning curve.
+- Parameterized queries guard against SQL injection.
+- Familiar PEP 249 shape (`sqlite3` / `psycopg2`), easy to drop into scripts.
+
+**Cons**
+- No object mapping — you hand-write every SQL string and map rows yourself.
+- Not portable — Spanner SQL dialect is baked into your strings.
+- Manual `commit()` / `rollback()` and transaction handling.
+- Bypasses Spanner-specific perf paths like mutations (method 2).
+
 ### 2. Native SDK
 The client library exposes two write styles:
 - **Mutations** — buffered insert/update/delete by primary key. No SQL, fastest path.
@@ -40,6 +51,17 @@ def apply_dml(transaction):
 database.run_in_transaction(apply_dml)   # begin + commit + retry handled for you
 ```
 
+**Pros**
+- Full access to Spanner features — mutations, partitioned DML, stale reads.
+- Mutations are the fastest write path for straight key-based row changes.
+- `run_in_transaction` handles begin/commit and automatic retry on abort.
+- Official, first-party library — best support and docs.
+
+**Cons**
+- Spanner-only API; code does not transfer to other databases.
+- More verbose — two write styles (mutations vs DML) to learn when to use.
+- No object mapping; you work with column tuples / rows.
+
 ### 3. SQLAlchemy ORM
 Map tables to classes, then add/change/delete objects through a `Session`. Most
 portable — switch databases by changing the connection URL.
@@ -49,6 +71,18 @@ singer = session.get(Singer, 3)
 singer.Active = True
 session.commit()
 ```
+
+**Pros**
+- Portable — same model code targets PostgreSQL, MySQL, etc. by swapping the URL.
+- Object mapping — work with Python objects, no hand-written SQL or row parsing.
+- Rich ecosystem: relationships, migrations (Alembic), query builder.
+- Familiar to teams already using SQLAlchemy.
+
+**Cons**
+- Extra dependency + abstraction layer to learn and debug.
+- Dialect lags the native SDK; some Spanner features unsupported or awkward.
+- ORM overhead and hidden SQL can mask performance issues at scale.
+- No auto-increment on Spanner — you still assign primary keys manually.
 
 ---
 

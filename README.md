@@ -6,14 +6,9 @@ using a different layer of abstraction.
 
 | # | Method | Library | You write… | Best when… |
 |---|--------|---------|------------|------------|
-| 1 | [Raw SQL (DB-API)](dbapi_sql/dml_dbapi.py) | `google-cloud-spanner` (DB-API / PEP 249) | SQL strings | you want plain SQL with no framework, no Java |
+| 1 | [Raw SQL (DB-API)](dbapi_sql/dml_dbapi.py) | `google-cloud-spanner` (DB-API / PEP 249) | SQL strings | you want plain SQL with no framework |
 | 2 | [Native SDK](spanner_sdk/dml_sdk.py) | `google-cloud-spanner` | mutations **or** SQL | you want full control + Spanner-specific features |
 | 3 | [SQLAlchemy ORM](sqlalchemy_orm/dml_sqlalchemy.py) | `sqlalchemy-spanner` | Python objects | you want portable, framework-style data access |
-
-> **A note on JDBC:** Spanner ships a JDBC driver, but JDBC is a *Java* API.
-> Using it from Python means a Java runtime plus a bridge like `JayDeBeApi`.
-> For "just run SQL" in pure Python, the **DB-API** (method 1) gives the same
-> raw-SQL experience without the Java dependency, so that is what this repo uses.
 
 ---
 
@@ -22,7 +17,7 @@ using a different layer of abstraction.
 ### 1. Raw SQL via the DB-API
 The DB-API connection is bundled inside `google-cloud-spanner`. You get a standard
 `connect()` → `cursor.execute(sql, params)` → `commit()` flow — identical in shape
-to `sqlite3` or `psycopg2`. Closest thing to the JDBC experience, pure Python.
+to `sqlite3` or `psycopg2`. Plain raw-SQL access, pure Python.
 
 ```python
 cursor.execute(

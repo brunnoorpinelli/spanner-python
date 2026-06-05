@@ -1,7 +1,6 @@
 """DML on Cloud Spanner with raw SQL via the Python DB-API (PEP 249).
 
-This is the closest pure-Python equivalent to "just run SQL" (the JDBC
-experience) without a Java runtime. The DB-API driver ships *inside* the
+Plain "just run SQL" in pure Python. The DB-API driver ships *inside* the
 google-cloud-spanner package, so no extra dependency is needed.
 
 Key points

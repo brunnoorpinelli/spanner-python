@@ -1,0 +1,5 @@
+# Method 1 & 2 — native client + DB-API (the DB-API ships inside this package)
+google-cloud-spanner>=3.40.0
+
+# Method 3 — SQLAlchemy dialect for Spanner (pulls in SQLAlchemy itself)
+sqlalchemy-spanner>=1.7.0
